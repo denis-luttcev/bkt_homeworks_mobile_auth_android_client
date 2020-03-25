@@ -1,0 +1,2 @@
+rootProject.name='bkt_homeworks_mobile_auth_android_client'
+include ':app'
