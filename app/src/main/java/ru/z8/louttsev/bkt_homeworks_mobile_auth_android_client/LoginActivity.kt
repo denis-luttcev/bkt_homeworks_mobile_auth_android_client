@@ -8,6 +8,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import io.ktor.util.KtorExperimentalAPI
@@ -15,15 +16,21 @@ import kotlinx.android.synthetic.main.activity_login.*
 
 private const val GET_ACCOUNTS_PERMISSION_REQUEST = 1000
 
-const val ACCOUNT_ID = "bkt_homeworks_mobile_auth_android_client"
-const val ACCOUNT_TYPE = "full_access"
-
 @KtorExperimentalAPI
 class LoginActivity : AccountAuthenticatorActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_login)
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)
+        loginBtn.setOnClickListener {
+            login()
+        }
+
+        registrationBtn.setOnClickListener {
+            startRegistrationActivity()
+        }
+
+/*        if (ContextCompat.checkSelfPermission(this, Manifest.permission.GET_ACCOUNTS)
             != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                 arrayOf(Manifest.permission.GET_ACCOUNTS),
@@ -31,9 +38,11 @@ class LoginActivity : AccountAuthenticatorActivity() {
         } else {
             getAccount()
         }
+
+        getAccount()*/
     }
 
-    private fun getAccount() {
+/*    private fun getAccount() {
 
         val account = accountManager.getAccountsByType(ACCOUNT_ID)[0]
         val token = accountManager.peekAuthToken(account, ACCOUNT_TYPE)
@@ -53,9 +62,9 @@ class LoginActivity : AccountAuthenticatorActivity() {
                 startRegistrationActivity()
             }
         }
-    }
+    }*/
 
-    override fun onRequestPermissionsResult(requestCode: Int,
+    /*override fun onRequestPermissionsResult(requestCode: Int,
                                             permissions: Array<out String>,
                                             grantResults: IntArray)
     {
@@ -70,7 +79,7 @@ class LoginActivity : AccountAuthenticatorActivity() {
             }
             else -> super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         }
-    }
+    }*/
 
     fun onTokenReceived(account: Account, password: String, token: String) {
         val accountManager = AccountManager.get(this)
@@ -82,9 +91,10 @@ class LoginActivity : AccountAuthenticatorActivity() {
             result.putString(AccountManager.KEY_AUTHTOKEN, token)
 
             accountManager.setAuthToken(account, account.type, token)
+
         } else {
             result.putString(AccountManager.KEY_ERROR_MESSAGE,
-                getString(R.string.account_already_exists))
+                getString(R.string.account_already_exist_error_message))
         }
 
         setAccountAuthenticatorResult(result)
@@ -97,7 +107,11 @@ class LoginActivity : AccountAuthenticatorActivity() {
         val password = passwordEdt.text.toString()
 
         if (isCorrectInputted(login, password)) {
-            requestToken(login, password)
+            Account(login, ACCOUNT_TYPE).also {
+                AccountManager.get(this).addAccountExplicitly(it, password, null)
+            }
+            finish()
+            /*requestToken(login, password)*/
         }
     }
 
@@ -118,21 +132,29 @@ class LoginActivity : AccountAuthenticatorActivity() {
         passwordEdt.text.clear()
     }
 
-    private fun requestToken(login: String, password: String) {
+/*    private fun requestToken(login: String, password: String) {
         sNetworkService.authenticate(login, password, ::checkAuthentication)
-    }
+    }*/
 
-    private fun checkAuthentication(token: String?) {
+/*    private fun checkAuthentication(token: String?) {
         if (token != null) {
+            sMyToken = token
+            val accountManager = AccountManager.get(this)
+            val accounts = accountManager.getAccountsByType(ACCOUNT_TYPE)
+            if (accounts.isNotEmpty()) {
+                val account = accounts[0]
+
+            }
+            finish()
             getUserAndStartMainActivity()
 
         } else {
             makeToast(this, R.string.authentication_error_message)
             clearFields()
         }
-    }
+    }*/
 
-    private fun getUserAndStartMainActivity() {
+/*    private fun getUserAndStartMainActivity() {
         sNetworkService.getMe { user ->
             if (user != null) {
                 sMyself = user
@@ -143,25 +165,25 @@ class LoginActivity : AccountAuthenticatorActivity() {
                 getSharedPreferences(SECURITY, MODE_PRIVATE).edit().remove(TOKEN).apply()
             }
         }
-    }
+    }*/
 
     private fun startRegistrationActivity() {
         startActivity(Intent(this@LoginActivity, RegistrationActivity::class.java))
     }
 
-    private fun startMainActivity() {
+/*    private fun startMainActivity() {
         startActivity(Intent(this@LoginActivity, MainActivity::class.java))
-    }
+    }*/
 
-    override fun onStop() {
+/*    override fun onStop() {
         super.onStop()
 
         if (!User.isAuthenticated()) {
             cancelRequests()
         }
-    }
+    }*/
 
-    private fun cancelRequests() {
+/*    private fun cancelRequests() {
         sNetworkService.cancellation()
-    }
+    }*/
 }

@@ -1,18 +1,15 @@
 package ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.authentication
 
-import android.accounts.AbstractAccountAuthenticator
-import android.accounts.Account
-import android.accounts.AccountAuthenticatorResponse
-import android.accounts.AccountManager
+import android.accounts.*
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import io.ktor.util.KtorExperimentalAPI
-import ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.ACCOUNT_ID
-import ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.LoginActivity
+import kotlinx.coroutines.*
+import ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.*
 
 @KtorExperimentalAPI
-class Authenticator(private val context: Context) : AbstractAccountAuthenticator(context) {
+class Authenticator(private val mContext: Context) : AbstractAccountAuthenticator(mContext) {
     override fun getAuthTokenLabel(p0: String?): String? = null
 
     override fun confirmCredentials(
@@ -30,29 +27,40 @@ class Authenticator(private val context: Context) : AbstractAccountAuthenticator
 
     override fun getAuthToken(
         response: AccountAuthenticatorResponse?,
-        account: Account?,
+        account: Account,
         authTokenType: String?,
         options: Bundle?
     ): Bundle {
-        val accountManager = AccountManager.get(context)
-        val token = accountManager.peekAuthToken(account, authTokenType)
-        val bundle = Bundle()
+        val result = Bundle()
 
-        if (token.isNotEmpty()) {
-            bundle.putString(AccountManager.KEY_ACCOUNT_NAME, account!!.name);
-            bundle.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
-            bundle.putString(AccountManager.KEY_AUTHTOKEN, token);
-
-        } else {
-            val intent = Intent(context, LoginActivity::class.java)
-            intent.apply {
-                putExtra(ACCOUNT_ID, authTokenType)
-                putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response)
+        fun handleToken(token: String?) {
+            if (null != token) {
+                result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name)
+                result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type)
+                result.putString(AccountManager.KEY_AUTHTOKEN, token)
+            } else {
+                val intent = Intent(mContext, LoginActivity::class.java).apply {
+                    putExtra(TOKEN_TYPE, authTokenType)
+                    putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response)
+                }
+                result.putParcelable(AccountManager.KEY_INTENT, intent)
             }
-            bundle.putParcelable(AccountManager.KEY_INTENT, intent)
         }
 
-        return bundle
+        val accountManager = AccountManager.get(mContext)
+        val token = accountManager.peekAuthToken(account, authTokenType)
+
+        if (null != token) {
+            handleToken(token)
+        } else {
+            val password = accountManager.getPassword(account)
+            val actualToken = runBlocking {
+                sNetworkService.authenticate(account.name, password)
+            }
+            handleToken(actualToken)
+        }
+
+        return result
     }
 
     override fun hasFeatures(
@@ -70,9 +78,9 @@ class Authenticator(private val context: Context) : AbstractAccountAuthenticator
         requiredFeatures: Array<out String>?,
         options: Bundle?
     ): Bundle {
-        val intent = Intent(context, LoginActivity::class.java)
+        val intent = Intent(mContext, LoginActivity::class.java)
         intent.apply {
-            putExtra(ACCOUNT_ID, accountType)
+            putExtra(ACCOUNT_TYPE, accountType)
             putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response)
         }
 

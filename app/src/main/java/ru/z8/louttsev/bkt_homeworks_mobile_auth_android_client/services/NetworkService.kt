@@ -33,7 +33,7 @@ interface NetworkService {
     fun registrate(username: String, login: String, password: String,
                    dataHandler: (token: String?, message: String?) -> Unit)
 
-    fun authenticate(login: String, password: String, dataHandler: (token: String?) -> Unit)
+    suspend fun authenticate(login: String, password: String): String?
 
     fun getMe(dataHandler: (user: User?) -> Unit)
 

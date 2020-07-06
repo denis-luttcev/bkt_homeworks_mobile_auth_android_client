@@ -39,6 +39,7 @@ class LayoutFiller(private val mActivity: MainActivity) {
             }
 
             prepareNewTextPostBody()
+            newPostLayout.visibility = VISIBLE
         }
     }
 

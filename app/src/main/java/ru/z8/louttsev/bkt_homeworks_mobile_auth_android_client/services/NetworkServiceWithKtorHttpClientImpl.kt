@@ -307,22 +307,21 @@ class NetworkServiceWithKtorHttpClientImpl : CoroutineScope by MainScope(), Netw
         }
     }
 
-    override fun authenticate(login: String, password: String, dataHandler: (token: String?) -> Unit) {
-        launch(Dispatchers.IO) {
-            val request = User.AuthenticationRequestDto(login, password)
 
-            try {
-                val response = client.post<User.AuthenticationResponseDto> {
-                    url(AUTHENTICATION.route)
-                    contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
-                    body = Gson().toJsonTree(request)
-                }
+    override suspend fun authenticate(login: String, password: String): String? {
+        val request = User.AuthenticationRequestDto(login, password)
 
-                withContext(Dispatchers.Main) { dataHandler(response.token) }
-
-            } catch (cause: AuthenticationException) {
-                withContext(Dispatchers.Main) { dataHandler(null) }
+        return try {
+            val response = client.post<User.AuthenticationResponseDto> {
+                url(AUTHENTICATION.route)
+                contentType(ContentType.Application.Json.withCharset(Charsets.UTF_8))
+                body = Gson().toJsonTree(request)
             }
+
+            response.token
+
+        } catch (cause: AuthenticationException) {
+            null
         }
     }
 

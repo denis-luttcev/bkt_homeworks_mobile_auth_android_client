@@ -1,5 +1,8 @@
 package ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client
 
+import android.accounts.Account
+import android.accounts.AccountManager
+import android.accounts.AccountManagerFuture
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -30,12 +33,78 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        mFiller.initViews()
+        checkAuthentication(onSuccess = ::init, onFailure = ::finish)
+    }
 
-        if (sRepository.isEmpty()) {
-            loadInitData()
+    private fun checkAuthentication(
+        onSuccess: () -> Unit,
+        onFailure: () -> Unit
+    ) {
+        fun extractToken(future: AccountManagerFuture<Bundle>) {
+            try {
+                future.result.getString(AccountManager.KEY_AUTHTOKEN)?.also { token: String ->
+                    sMyToken = token
+                    onSuccess()
+                }
+            } catch (e: Exception) {
+                onFailure()
+            }
+        }
+
+        val accountManager = AccountManager.get(this)
+        val accounts = accountManager.getAccountsByType(ACCOUNT_TYPE)
+
+        if (accounts.isEmpty()) {
+            addNewAccount(accountManager, ::extractToken)
         } else {
-            refreshData()
+            receiveAuthToken(accounts[0], accountManager, ::extractToken)
+        }
+    }
+
+    private fun addNewAccount(
+        accountManager: AccountManager,
+        callback: (future: AccountManagerFuture<Bundle>) -> Unit
+    ) {
+        accountManager.addAccount(
+            ACCOUNT_TYPE,
+            TOKEN_TYPE,
+            null,
+            null,
+            this,
+            callback,
+            null
+        )
+    }
+
+    private fun receiveAuthToken(
+        account: Account,
+        accountManager: AccountManager,
+        callback: (future: AccountManagerFuture<Bundle>) -> Unit
+    ) {
+        accountManager.getAuthToken(
+            account,
+            TOKEN_TYPE,
+            null,
+            this,
+            callback,
+            null
+        )
+    }
+
+    private fun init() {
+        sNetworkService.getMe { user ->
+            if (null != user) {
+                sMyself = user
+                mFiller.initViews()
+
+                if (sRepository.isEmpty()) {
+                    loadInitData()
+                } else {
+                    refreshData()
+                }
+            } else {
+                handleAuthorizationException()
+            }
         }
     }
 
@@ -61,12 +130,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun isPresent(posts: List<Post>?, ads: List<AdsPost>?) = posts != null && ads != null
 
-    fun handleAuthorizationException() {
+    private fun handleAuthorizationException() {
         makeToast(this, R.string.authorization_error_message)
         swipeContainer.isRefreshing = false
 
-        startLoginActivity()
-        finish()
+        resetToken()
+    }
+
+    private fun resetToken() {
+        val accountManager = AccountManager.get(this)
+        accountManager.invalidateAuthToken(TOKEN_TYPE, sMyToken)
+        sMyToken = ""
+        sMyself = null
+        checkAuthentication(onSuccess = ::init, onFailure = ::finish)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -102,10 +178,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun isImageSelected(resultCode: Int, data: Intent?) =
         resultCode == RESULT_OK && data != null
-
-    private fun startLoginActivity() {
-        startActivity(Intent(this@MainActivity, LoginActivity::class.java))
-    }
 
     fun getGalleryContent() {
         startActivityForResult(Intent().apply {
@@ -169,11 +241,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun sendMedia(mediaUri: Uri) {
+    private fun sendMedia(mediaUri: Uri) {
         sNetworkService.saveMedia(mediaUri, this, ::handleMedia)
     }
 
-    fun handleMedia(url: String?, cause: Throwable?) {
+    private fun handleMedia(url: String?, cause: Throwable?) {
         if (url != null) {
             newPreviewIv.tag = url
 
@@ -204,7 +276,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun handleUpdatedPost(position: Int) {
+    private fun handleUpdatedPost(position: Int) {
         mFiller.notifyDataSetChanged()
 
         postListing.smoothScrollToPosition(position)

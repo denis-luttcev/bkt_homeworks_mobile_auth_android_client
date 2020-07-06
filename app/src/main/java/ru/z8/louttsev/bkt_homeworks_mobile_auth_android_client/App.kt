@@ -29,27 +29,16 @@ val sNetworkService by sKodein.instance<NetworkService>()
 @KtorExperimentalAPI
 val sRepository by sKodein.instance<PostRepository>()
 
-var sMyToken: String? = null
+var sMyToken: String = ""
 var sMyself: User? = null
 
-const val SECURITY = "security"
-const val TOKEN = "token"
+const val ACCOUNT_TYPE = "bkt_homeworks_mobile_auth_android_client.ACCOUNT_TYPE"
+const val TOKEN_TYPE = "bkt_homeworks_mobile_auth_android_client.TOKEN_TYPE_FULL_ACCESS"
 
 @KtorExperimentalAPI
-class App : Application() {
-    override fun onCreate() {
-        super.onCreate()
-
-        val sharedPreferences = getSharedPreferences(SECURITY, MODE_PRIVATE)
-        sMyToken = sharedPreferences.getString(TOKEN, null)
-    }
-}
+class App : Application()
 
 data class User(val id: UUID, val username: String) {
-    companion object {
-        fun isAuthenticated() = sMyToken != null
-    }
-
     data class RegistrationRequestDto(val username: String, val login: String, val password: String)
     data class AuthenticationRequestDto(val login: String, val password: String)
     data class AuthenticationResponseDto(val token: String)

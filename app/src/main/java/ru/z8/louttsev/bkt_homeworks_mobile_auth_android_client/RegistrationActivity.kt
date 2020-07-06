@@ -1,5 +1,8 @@
 package ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client
 
+import android.accounts.Account
+import android.accounts.AccountAuthenticatorActivity
+import android.accounts.AccountManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -85,7 +88,11 @@ class RegistrationActivity : AppCompatActivity() {
 
     private fun checkAuthentication(token: String?, message: String?) {
         if (token != null) {
-            sMyToken = token
+
+/*            sMyToken = token
+            val account = Account("name", ACCOUNT_TYPE)
+            val accountManager = AccountManager.get(this)
+            accountManager.addAccountExplicitly(account, "password", null)*/
             finish()
 
         } else {
