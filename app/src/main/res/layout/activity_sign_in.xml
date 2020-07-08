@@ -61,7 +61,7 @@
         android:inputType="textPassword"
         android:padding="8dp"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/loginBtn"
+        app:layout_constraintBottom_toTopOf="@+id/signInBtn"
         app:layout_constraintEnd_toEndOf="@+id/loginEdt"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/loginEdt"
@@ -69,13 +69,13 @@
         app:layout_constraintVertical_chainStyle="packed" />
 
     <Button
-        android:id="@+id/loginBtn"
+        android:id="@+id/signInBtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:background="@drawable/rounded_fill_block"
         android:padding="8dp"
-        android:text="@string/login_btn_text"
+        android:text="@string/sign_in_btn_text"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/registrationBtn"
         app:layout_constraintEnd_toEndOf="@+id/passwordEdt"
@@ -94,9 +94,9 @@
         android:text="@string/registration_btn_text"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/loginBtn"
+        app:layout_constraintEnd_toEndOf="@+id/signInBtn"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/loginBtn"
-        app:layout_constraintTop_toBottomOf="@+id/loginBtn"
+        app:layout_constraintStart_toStartOf="@+id/signInBtn"
+        app:layout_constraintTop_toBottomOf="@+id/signInBtn"
         app:layout_constraintVertical_chainStyle="packed" />
 </androidx.constraintlayout.widget.ConstraintLayout>

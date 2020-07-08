@@ -112,7 +112,7 @@
         android:background="@drawable/rounded_field"
         android:ellipsize="end"
         android:hint="@string/video_url_hint"
-        android:inputType="textMultiLine"
+        android:inputType="textUri"
         android:padding="8dp"
         android:textColor="@color/colorPrimaryText"
         app:layout_constraintEnd_toEndOf="parent"

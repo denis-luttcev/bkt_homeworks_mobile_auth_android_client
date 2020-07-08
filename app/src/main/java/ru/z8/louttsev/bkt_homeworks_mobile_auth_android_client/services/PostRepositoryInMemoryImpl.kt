@@ -56,11 +56,7 @@ class PostRepositoryInMemoryImpl : PostRepository {
     override fun getPostById(id: UUID) : Post {
         val post = postList.find { it.id == id }
 
-        return if (post != null) {
-            post
-        } else {
-            hiddenPosts.find { it.id == id }!!
-        }
+        return post ?: hiddenPosts.find { it.id == id }!!
     }
 
     override fun getPostByPosition(position: Int): Post = postList[position]

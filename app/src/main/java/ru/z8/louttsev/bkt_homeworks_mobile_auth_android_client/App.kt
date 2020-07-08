@@ -47,7 +47,3 @@ data class User(val id: UUID, val username: String) {
 fun makeToast(context: Context, stringID: Int) {
     Toast.makeText(context, context.getString(stringID), Toast.LENGTH_SHORT).show()
 }
-
-fun makeToast(context: Context, string: String) {
-    Toast.makeText(context, string, Toast.LENGTH_SHORT).show()
-}

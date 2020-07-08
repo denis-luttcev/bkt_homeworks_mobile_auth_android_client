@@ -1,8 +1,7 @@
 package ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.datamodel
 
 import android.content.Context
-import android.content.Intent
-import java.util.UUID
+import java.util.*
 
 abstract class Post(
     var id : UUID = UUID.randomUUID(),

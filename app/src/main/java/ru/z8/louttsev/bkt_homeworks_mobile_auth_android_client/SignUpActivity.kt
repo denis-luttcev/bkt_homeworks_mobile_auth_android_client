@@ -1,21 +1,18 @@
 package ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client
 
-import android.accounts.Account
-import android.accounts.AccountAuthenticatorActivity
-import android.accounts.AccountManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import io.ktor.util.KtorExperimentalAPI
-import kotlinx.android.synthetic.main.activity_registration.*
+import kotlinx.android.synthetic.main.activity_sign_up.*
 
 @KtorExperimentalAPI
-class RegistrationActivity : AppCompatActivity() {
+class SignUpActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_registration)
+        setContentView(R.layout.activity_sign_up)
 
-        registrateBtn.setOnClickListener {
+        signUpBtn.setOnClickListener {
             registration()
         }
     }
@@ -83,7 +80,7 @@ class RegistrationActivity : AppCompatActivity() {
     }
 
     private fun requestRegistration(username: String, login: String, password: String) {
-        sNetworkService.registrate(username, login, password, ::checkAuthentication)
+        sNetworkService.signUp(username, login, password, ::checkAuthentication)
     }
 
     private fun checkAuthentication(token: String?, message: String?) {

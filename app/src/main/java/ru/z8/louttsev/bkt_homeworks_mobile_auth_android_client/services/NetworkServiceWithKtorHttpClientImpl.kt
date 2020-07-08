@@ -291,7 +291,7 @@ class NetworkServiceWithKtorHttpClientImpl : CoroutineScope by MainScope(), Netw
         }
     }
 
-    override fun registrate(
+    override fun signUp(
         username: String,
         login: String,
         password: String,
@@ -316,7 +316,7 @@ class NetworkServiceWithKtorHttpClientImpl : CoroutineScope by MainScope(), Netw
     }
 
 
-    override suspend fun authenticate(login: String, password: String): String? {
+    override suspend fun signIn(login: String, password: String): String? {
         val request = User.AuthenticationRequestDto(login, password)
 
         return try {
@@ -333,13 +333,13 @@ class NetworkServiceWithKtorHttpClientImpl : CoroutineScope by MainScope(), Netw
         }
     }
 
-    override fun authenticate(
+    override fun signIn(
         login: String,
         password: String,
         dataHandler: (token: String?) -> Unit
     ) {
         launch(Dispatchers.IO) {
-            val token = authenticate(login, password)
+            val token = signIn(login, password)
             withContext(Dispatchers.Main) { dataHandler(token) }
         }
     }

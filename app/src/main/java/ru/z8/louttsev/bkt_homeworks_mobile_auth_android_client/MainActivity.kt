@@ -2,6 +2,7 @@ package ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client
 
 import android.accounts.Account
 import android.accounts.AccountManager
+import android.accounts.AccountManager.*
 import android.accounts.AccountManagerFuture
 import android.content.Intent
 import android.net.Uri
@@ -40,11 +41,11 @@ class MainActivity : AppCompatActivity() {
         onSuccess: () -> Unit,
         onFailure: () -> Unit
     ) {
-        val accountManager = AccountManager.get(applicationContext)
+        val accountManager = get(applicationContext)
 
         fun acquireToken(future: AccountManagerFuture<Bundle>) {
             try {
-                val token = future.result.getString(AccountManager.KEY_AUTHTOKEN)
+                val token = future.result.getString(KEY_AUTHTOKEN)
                 token?.let {
                     sMyToken = token
                     onSuccess()
@@ -147,7 +148,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun resetToken() {
-        val accountManager = AccountManager.get(applicationContext)
+        val accountManager = get(applicationContext)
 
         accountManager.invalidateAuthToken(ACCOUNT_TYPE, sMyToken)
         sMyToken = ""
@@ -270,7 +271,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 else -> {
-                    makeToast(this, R.string.load_error_message)
+                    makeToast(this, R.string.loading_error_message)
                     mFiller.prepareNewImagePostBody()
                 }
             }

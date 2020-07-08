@@ -27,7 +27,8 @@
         app:layout_constraintStart_toEndOf="@+id/avatarIv"
         app:layout_constraintTop_toTopOf="@id/avatarIv"
         app:layout_constraintVertical_chainStyle="spread"
-        tools:text="5 min. ago" />
+        tools:text="5 min. ago"
+        tools:ignore="SmallSp" />
 
     <TextView
         android:id="@+id/adsTv"

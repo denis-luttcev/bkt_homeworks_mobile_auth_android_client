@@ -124,7 +124,7 @@
         android:inputType="textPassword"
         android:padding="8dp"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/registrateBtn"
+        app:layout_constraintBottom_toTopOf="@+id/signUpBtn"
         app:layout_constraintEnd_toEndOf="@+id/passwordEdt"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/passwordEdt"
@@ -132,13 +132,13 @@
         app:layout_constraintVertical_chainStyle="packed" />
 
     <Button
-        android:id="@+id/registrateBtn"
+        android:id="@+id/signUpBtn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:background="@drawable/rounded_fill_block"
         android:padding="8dp"
-        android:text="@string/registrate_btn_text"
+        android:text="@string/sign_up_btn_text"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/passwordConfirmationEdt"

@@ -1,6 +1,7 @@
 package ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.authentication
 
 import android.accounts.*
+import android.accounts.AccountManager.*
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -35,19 +36,19 @@ class Authenticator(private val mContext: Context) : AbstractAccountAuthenticato
 
         fun handleToken(token: String?) {
             if (null != token) {
-                result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name)
-                result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type)
-                result.putString(AccountManager.KEY_AUTHTOKEN, token)
+                result.putString(KEY_ACCOUNT_NAME, account.name)
+                result.putString(KEY_ACCOUNT_TYPE, account.type)
+                result.putString(KEY_AUTHTOKEN, token)
             } else {
-                val intent = Intent(mContext, LoginActivity::class.java).apply {
+                val intent = Intent(mContext, SignInActivity::class.java).apply {
                     putExtra(TOKEN_TYPE, authTokenType)
-                    putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response)
+                    putExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response)
                 }
-                result.putParcelable(AccountManager.KEY_INTENT, intent)
+                result.putParcelable(KEY_INTENT, intent)
             }
         }
 
-        val accountManager = AccountManager.get(mContext)
+        val accountManager = get(mContext)
         val token = accountManager.peekAuthToken(account, authTokenType)
 
         if (null != token) {
@@ -55,7 +56,7 @@ class Authenticator(private val mContext: Context) : AbstractAccountAuthenticato
         } else {
             val password = accountManager.getPassword(account)
             val actualToken = runBlocking {
-                sNetworkService.authenticate(account.name, password)
+                sNetworkService.signIn(account.name, password)
             }
             handleToken(actualToken)
         }
@@ -78,17 +79,17 @@ class Authenticator(private val mContext: Context) : AbstractAccountAuthenticato
         requiredFeatures: Array<out String>?,
         options: Bundle?
     ): Bundle {
-        val intent = Intent(mContext, LoginActivity::class.java)
+        val intent = Intent(mContext, SignInActivity::class.java)
         intent.apply {
             putExtra(ACCOUNT_TYPE, accountType)
-            putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response)
+            putExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response)
         }
 
         val bundle = Bundle()
         if (options != null) {
             bundle.putAll(options)
         }
-        bundle.putParcelable(AccountManager.KEY_INTENT, intent)
+        bundle.putParcelable(KEY_INTENT, intent)
 
         return bundle
     }

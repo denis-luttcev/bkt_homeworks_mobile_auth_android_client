@@ -37,16 +37,16 @@ interface NetworkService {
 
     fun loadMedia(mediaUrl: String, dataHandler: (image: Bitmap?) -> Unit)
 
-    fun registrate(
+    fun signUp(
         username: String,
         login: String,
         password: String,
         dataHandler: (token: String?, message: String?) -> Unit
     )
 
-    suspend fun authenticate(login: String, password: String): String?
+    suspend fun signIn(login: String, password: String): String?
 
-    fun authenticate(
+    fun signIn(
         login: String,
         password: String,
         dataHandler: (token: String?) -> Unit
