@@ -35,7 +35,7 @@ class SignInActivity : AppCompatActivity() {
         }
 
         registrationBtn.setOnClickListener {
-            startRegistrationActivity()
+            signUp()
         }
     }
 
@@ -95,18 +95,8 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
-    private fun startRegistrationActivity() {
+    private fun signUp() {
         startActivity(Intent(this@SignInActivity, SignUpActivity::class.java))
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        cancelRequests()
-    }
-
-    private fun cancelRequests() {
-        sNetworkService.cancellation()
     }
 
     override fun onBackPressed() {
