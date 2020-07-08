@@ -1,6 +1,9 @@
 package ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client
 
+import android.accounts.Account
+import android.accounts.AccountManager
 import android.app.Activity
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
@@ -81,21 +84,30 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun requestRegistration(username: String, login: String, password: String) {
-        sNetworkService.signUp(username, login, password, ::checkAuthentication)
-    }
+        sNetworkService.signUp(username, login, password) { token: String?, message: String? ->
+            if (token != null) {
+                val accountManager = AccountManager.get(applicationContext)
+                val account = Account(login, ACCOUNT_TYPE)
 
-    private fun checkAuthentication(token: String?, message: String?) {
-        if (token != null) {
+                val data = Bundle().apply {
+                    putString(AccountManager.KEY_ACCOUNT_NAME, account.name)
+                    putString(AccountManager.KEY_ACCOUNT_TYPE, account.type)
+                    putString(AccountManager.KEY_AUTHTOKEN, token)
+                }
 
-/*            sMyToken = token
-            val account = Account("name", ACCOUNT_TYPE)
-            val accountManager = AccountManager.get(this)
-            accountManager.addAccountExplicitly(account, "password", null)*/
-            finish()
+                if (accountManager.addAccountExplicitly(account, password, null)) {
+                    accountManager.setAuthToken(account, account.type, token)
+                } else {
+                    accountManager.setPassword(account, password)
+                }
 
-        } else {
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-            clearFields()
+                setResult(Activity.RESULT_OK, Intent().putExtras(data))
+                finish()
+
+            } else {
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                clearFields()
+            }
         }
     }
 

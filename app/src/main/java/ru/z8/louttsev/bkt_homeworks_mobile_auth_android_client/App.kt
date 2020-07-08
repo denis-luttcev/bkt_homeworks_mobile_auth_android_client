@@ -35,6 +35,8 @@ var sMyself: User? = null
 const val ACCOUNT_TYPE = "ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.ACCOUNT_TYPE"
 const val TOKEN_TYPE = "ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.TOKEN_TYPE_FULL_ACCESS"
 
+const val SIGN_UP_REQUEST = 1000
+
 @KtorExperimentalAPI
 class App : Application()
 

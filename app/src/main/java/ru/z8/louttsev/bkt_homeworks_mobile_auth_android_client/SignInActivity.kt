@@ -83,10 +83,7 @@ class SignInActivity : AppCompatActivity() {
                     accountManager.setPassword(account, password)
                 }
 
-                setAccountAuthenticatorResult(data)
-                setResult(Activity.RESULT_OK, Intent().putExtras(data))
-
-                finish()
+                finishSignIn(data)
 
             } else {
                 makeToast(this, R.string.authentication_error_message)
@@ -95,8 +92,26 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
+    private fun finishSignIn(data: Bundle) {
+        setAccountAuthenticatorResult(data)
+        setResult(Activity.RESULT_OK, Intent().putExtras(data))
+
+        finish()
+    }
+
     private fun signUp() {
-        startActivity(Intent(this@SignInActivity, SignUpActivity::class.java))
+        startActivityForResult(Intent(this, SignUpActivity::class.java), SIGN_UP_REQUEST)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, result: Intent?) {
+        if (SIGN_UP_REQUEST == requestCode && Activity.RESULT_OK == resultCode) {
+            val data = result?.extras
+            data?.let {
+                finishSignIn(data)
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, result)
+        }
     }
 
     override fun onBackPressed() {
