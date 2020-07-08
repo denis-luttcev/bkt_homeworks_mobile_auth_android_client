@@ -1,26 +1,37 @@
 package ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client
 
-import android.Manifest
 import android.accounts.Account
-import android.accounts.AccountAuthenticatorActivity
+import android.accounts.AccountAuthenticatorResponse
 import android.accounts.AccountManager
+import android.accounts.AccountManager.*
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import io.ktor.util.KtorExperimentalAPI
 import kotlinx.android.synthetic.main.activity_login.*
 
 private const val GET_ACCOUNTS_PERMISSION_REQUEST = 1000
 
+/**
+ * Implementation borrowed from deprecated AccountAuthenticatorActivity
+ */
 @KtorExperimentalAPI
-class LoginActivity : AccountAuthenticatorActivity() {
+class LoginActivity : AppCompatActivity() {
+    private var mAccountAuthenticatorResponse: AccountAuthenticatorResponse? = null
+    private var mResultBundle: Bundle? = null
+
+    fun setAccountAuthenticatorResult(result: Bundle) {
+        mResultBundle = result
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+
+        mAccountAuthenticatorResponse =
+            intent.getParcelableExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE)
+        mAccountAuthenticatorResponse?.onRequestContinued()
 
         loginBtn.setOnClickListener {
             login()
@@ -81,37 +92,12 @@ class LoginActivity : AccountAuthenticatorActivity() {
         }
     }*/
 
-    fun onTokenReceived(account: Account, password: String, token: String) {
-        val accountManager = AccountManager.get(this)
-        val result = Bundle()
-
-        if (accountManager.addAccountExplicitly(account, password, Bundle())) {
-            result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name)
-            result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type)
-            result.putString(AccountManager.KEY_AUTHTOKEN, token)
-
-            accountManager.setAuthToken(account, account.type, token)
-
-        } else {
-            result.putString(AccountManager.KEY_ERROR_MESSAGE,
-                getString(R.string.account_already_exist_error_message))
-        }
-
-        setAccountAuthenticatorResult(result)
-        setResult(Activity.RESULT_OK)
-        finish()
-    }
-
     private fun login() {
         val login = loginEdt.text.toString()
         val password = passwordEdt.text.toString()
 
         if (isCorrectInputted(login, password)) {
-            Account(login, ACCOUNT_TYPE).also {
-                AccountManager.get(this).addAccountExplicitly(it, password, null)
-            }
-            finish()
-            /*requestToken(login, password)*/
+            requestToken(login, password)
         }
     }
 
@@ -132,27 +118,41 @@ class LoginActivity : AccountAuthenticatorActivity() {
         passwordEdt.text.clear()
     }
 
-/*    private fun requestToken(login: String, password: String) {
-        sNetworkService.authenticate(login, password, ::checkAuthentication)
-    }*/
+    private fun requestToken(login: String, password: String) {
+        sNetworkService.authenticate(login, password) { token: String? ->
+            if (null != token) {
+                val accountManager = get(applicationContext)
+                val account = Account(login, ACCOUNT_TYPE)
+/*                val accounts = accountManager.getAccountsByType(ACCOUNT_TYPE)
+                val account = if (accounts.isNotEmpty()) {
+                    accounts[0]
+                } else {
+                    Account(login, ACCOUNT_TYPE)
+                }*/
 
-/*    private fun checkAuthentication(token: String?) {
-        if (token != null) {
-            sMyToken = token
-            val accountManager = AccountManager.get(this)
-            val accounts = accountManager.getAccountsByType(ACCOUNT_TYPE)
-            if (accounts.isNotEmpty()) {
-                val account = accounts[0]
+                val data = Bundle().apply {
+                    putString(KEY_ACCOUNT_NAME, account.name)
+                    putString(KEY_ACCOUNT_TYPE, account.type)
+                    putString(KEY_AUTHTOKEN, token)
+                }
 
+                if (accountManager.addAccountExplicitly(account, password, null)) {
+                    accountManager.setAuthToken(account, account.type, token)
+                } else {
+                    accountManager.setPassword(account, password)
+                }
+
+                setAccountAuthenticatorResult(data)
+                setResult(Activity.RESULT_OK, Intent().putExtras(data))
+
+                finish()
+
+            } else {
+                makeToast(this, R.string.authentication_error_message)
+                clearFields()
             }
-            finish()
-            getUserAndStartMainActivity()
-
-        } else {
-            makeToast(this, R.string.authentication_error_message)
-            clearFields()
         }
-    }*/
+    }
 
 /*    private fun getUserAndStartMainActivity() {
         sNetworkService.getMe { user ->
@@ -186,4 +186,35 @@ class LoginActivity : AccountAuthenticatorActivity() {
 /*    private fun cancelRequests() {
         sNetworkService.cancellation()
     }*/
+
+    override fun onBackPressed() {
+        setResult(Activity.RESULT_CANCELED)
+        super.onBackPressed()
+    }
+
+/*    override fun finish() {
+        mAccountAuthenticatorResponse?.let { response: AccountAuthenticatorResponse ->
+            mResultBundle?.let { bundle: Bundle ->
+                if (!bundle.containsKey(AccountManager.KEY_ERROR_MESSAGE)) {
+                    response.onResult(bundle)
+                } else {
+                    response.onError(
+                        AccountManager.ERROR_CODE_CANCELED,
+                        bundle.getString(AccountManager.KEY_ERROR_MESSAGE))
+                }
+                mAccountAuthenticatorResponse = null
+            }
+        }
+        super.finish()
+    }*/
+
+    override fun finish() {
+        mAccountAuthenticatorResponse?.let {
+            mResultBundle?.let {
+                mAccountAuthenticatorResponse!!.onResult(mResultBundle)
+            } ?: mAccountAuthenticatorResponse!!.onError(ERROR_CODE_CANCELED, "canceled")
+            mAccountAuthenticatorResponse = null
+        }
+        super.finish()
+    }
 }

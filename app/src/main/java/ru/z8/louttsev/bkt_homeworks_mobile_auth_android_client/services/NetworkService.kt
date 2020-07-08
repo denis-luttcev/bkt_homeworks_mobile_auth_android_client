@@ -22,18 +22,35 @@ interface NetworkService {
 
     fun deletePost(postID: UUID, completionListener: (successfully: Boolean) -> Unit)
 
-    fun saveMedia(mediaUri: Uri, context: Context,
-                  dataHandler: (permanentUrl: String?, cause: Throwable?) -> Unit)
+    fun saveMedia(
+        mediaUri: Uri,
+        context: Context,
+        dataHandler: (permanentUrl: String?, cause: Throwable?) -> Unit
+    )
 
-    fun updateSocial(postID: UUID, action: SocialAction, mode: Mode,
-                     completionListener: (cause: Throwable?) -> Unit)
+    fun updateSocial(
+        postID: UUID,
+        action: SocialAction,
+        mode: Mode,
+        completionListener: (cause: Throwable?) -> Unit
+    )
 
     fun loadMedia(mediaUrl: String, dataHandler: (image: Bitmap?) -> Unit)
 
-    fun registrate(username: String, login: String, password: String,
-                   dataHandler: (token: String?, message: String?) -> Unit)
+    fun registrate(
+        username: String,
+        login: String,
+        password: String,
+        dataHandler: (token: String?, message: String?) -> Unit
+    )
 
     suspend fun authenticate(login: String, password: String): String?
+
+    fun authenticate(
+        login: String,
+        password: String,
+        dataHandler: (token: String?) -> Unit
+    )
 
     fun getMe(dataHandler: (user: User?) -> Unit)
 

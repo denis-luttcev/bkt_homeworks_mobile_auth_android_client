@@ -40,24 +40,34 @@ class MainActivity : AppCompatActivity() {
         onSuccess: () -> Unit,
         onFailure: () -> Unit
     ) {
-        fun extractToken(future: AccountManagerFuture<Bundle>) {
+        val accountManager = AccountManager.get(applicationContext)
+
+        fun acquireToken(future: AccountManagerFuture<Bundle>) {
             try {
-                future.result.getString(AccountManager.KEY_AUTHTOKEN)?.also { token: String ->
+                val token = future.result.getString(AccountManager.KEY_AUTHTOKEN)
+                token?.let {
                     sMyToken = token
                     onSuccess()
-                }
+                } ?: onFailure()
             } catch (e: Exception) {
                 onFailure()
             }
         }
 
-        val accountManager = AccountManager.get(this)
-        val accounts = accountManager.getAccountsByType(ACCOUNT_TYPE)
+        fun acquireAccount(future: AccountManagerFuture<Bundle>) {
+            val accounts = accountManager.getAccountsByType(ACCOUNT_TYPE)
+            if (accounts.isNotEmpty()) {
+                receiveAuthToken(accounts[0], accountManager, ::acquireToken)
+            } else {
+                onFailure()
+            }
+        }
 
+        val accounts = accountManager.getAccountsByType(ACCOUNT_TYPE)
         if (accounts.isEmpty()) {
-            addNewAccount(accountManager, ::extractToken)
+            addNewAccount(accountManager, ::acquireAccount)
         } else {
-            receiveAuthToken(accounts[0], accountManager, ::extractToken)
+            receiveAuthToken(accounts[0], accountManager, ::acquireToken)
         }
     }
 
@@ -131,17 +141,18 @@ class MainActivity : AppCompatActivity() {
     private fun isPresent(posts: List<Post>?, ads: List<AdsPost>?) = posts != null && ads != null
 
     private fun handleAuthorizationException() {
-        makeToast(this, R.string.authorization_error_message)
         swipeContainer.isRefreshing = false
 
         resetToken()
     }
 
     private fun resetToken() {
-        val accountManager = AccountManager.get(this)
-        accountManager.invalidateAuthToken(TOKEN_TYPE, sMyToken)
+        val accountManager = AccountManager.get(applicationContext)
+
+        accountManager.invalidateAuthToken(ACCOUNT_TYPE, sMyToken)
         sMyToken = ""
         sMyself = null
+
         checkAuthentication(onSuccess = ::init, onFailure = ::finish)
     }
 

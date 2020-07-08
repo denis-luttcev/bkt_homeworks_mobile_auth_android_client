@@ -175,8 +175,10 @@ class NetworkServiceWithKtorHttpClientImpl : CoroutineScope by MainScope(), Netw
         }
     }
 
-    override fun saveMedia(mediaUri: Uri, context: Context,
-                           dataHandler: (permanentUrl: String?, cause: Throwable?) -> Unit
+    override fun saveMedia(
+        mediaUri: Uri,
+        context: Context,
+        dataHandler: (permanentUrl: String?, cause: Throwable?) -> Unit
     ) {
         val filename = try {
             context.contentResolver.query(
@@ -244,8 +246,11 @@ class NetworkServiceWithKtorHttpClientImpl : CoroutineScope by MainScope(), Netw
         }
     }
 
-    override fun updateSocial(postID: UUID, action: SocialAction, mode: Mode,
-                              completionListener: (cause: Throwable?) -> Unit
+    override fun updateSocial(
+        postID: UUID,
+        action: SocialAction,
+        mode: Mode,
+        completionListener: (cause: Throwable?) -> Unit
     ) {
         launch(Dispatchers.IO) {
             val url = POSTS.routeWith(postID, action)
@@ -286,8 +291,11 @@ class NetworkServiceWithKtorHttpClientImpl : CoroutineScope by MainScope(), Netw
         }
     }
 
-    override fun registrate(username: String, login: String, password: String,
-                            dataHandler: (token: String?, message: String?) -> Unit
+    override fun registrate(
+        username: String,
+        login: String,
+        password: String,
+        dataHandler: (token: String?, message: String?) -> Unit
     ) {
         launch(Dispatchers.IO) {
             val request = User.RegistrationRequestDto(username, login, password)
@@ -322,6 +330,17 @@ class NetworkServiceWithKtorHttpClientImpl : CoroutineScope by MainScope(), Netw
 
         } catch (cause: AuthenticationException) {
             null
+        }
+    }
+
+    override fun authenticate(
+        login: String,
+        password: String,
+        dataHandler: (token: String?) -> Unit
+    ) {
+        launch(Dispatchers.IO) {
+            val token = authenticate(login, password)
+            withContext(Dispatchers.Main) { dataHandler(token) }
         }
     }
 

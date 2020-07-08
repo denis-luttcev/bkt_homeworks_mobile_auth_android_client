@@ -32,8 +32,8 @@ val sRepository by sKodein.instance<PostRepository>()
 var sMyToken: String = ""
 var sMyself: User? = null
 
-const val ACCOUNT_TYPE = "bkt_homeworks_mobile_auth_android_client.ACCOUNT_TYPE"
-const val TOKEN_TYPE = "bkt_homeworks_mobile_auth_android_client.TOKEN_TYPE_FULL_ACCESS"
+const val ACCOUNT_TYPE = "ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.ACCOUNT_TYPE"
+const val TOKEN_TYPE = "ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.TOKEN_TYPE_FULL_ACCESS"
 
 @KtorExperimentalAPI
 class App : Application()
@@ -46,4 +46,8 @@ data class User(val id: UUID, val username: String) {
 
 fun makeToast(context: Context, stringID: Int) {
     Toast.makeText(context, context.getString(stringID), Toast.LENGTH_SHORT).show()
+}
+
+fun makeToast(context: Context, string: String) {
+    Toast.makeText(context, string, Toast.LENGTH_SHORT).show()
 }

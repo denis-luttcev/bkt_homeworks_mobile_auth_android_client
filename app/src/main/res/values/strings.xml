@@ -34,5 +34,5 @@
     <string name="unsupported_media_error_message">This media isn\'t supported</string>
     <string name="load_error_message">Can\'t load media</string>
     <string name="permission_error_message">Can\'t authenticate user without this permission</string>
-    <string name="account_already_exist_error_message">Account already exist</string>
+    <string name="login_error_message">Login canceled</string>
 </resources>
