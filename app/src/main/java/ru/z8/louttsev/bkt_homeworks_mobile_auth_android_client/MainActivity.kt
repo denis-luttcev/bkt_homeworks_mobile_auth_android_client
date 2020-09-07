@@ -64,6 +64,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        progressBar.visibility = View.VISIBLE
+
         val accounts = accountManager.getAccountsByType(ACCOUNT_TYPE)
         if (accounts.isEmpty()) {
             addNewAccount(accountManager, ::acquireAccount)
@@ -106,6 +108,9 @@ class MainActivity : AppCompatActivity() {
         sNetworkService.getMe { user ->
             if (null != user) {
                 sMyself = user
+
+                progressBar.visibility = View.GONE
+
                 mFiller.initViews()
 
                 if (sRepository.isEmpty()) {
@@ -379,6 +384,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
 
+        progressBar.visibility = View.GONE
         cancelRequests()
     }
 

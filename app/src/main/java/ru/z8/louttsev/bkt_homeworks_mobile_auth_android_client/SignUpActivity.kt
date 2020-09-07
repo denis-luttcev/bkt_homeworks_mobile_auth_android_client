@@ -6,8 +6,10 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import io.ktor.util.KtorExperimentalAPI
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_sign_up.*
 
 @KtorExperimentalAPI
@@ -28,6 +30,8 @@ class SignUpActivity : AppCompatActivity() {
         val passwordConfirmation = passwordConfirmationEdt.text.toString()
 
         if (isCorrectInputted(login, password, username, passwordConfirmation)) {
+            progressBarSignUp.visibility = View.VISIBLE
+
             requestRegistration(username, login, password)
         }
     }
@@ -102,10 +106,12 @@ class SignUpActivity : AppCompatActivity() {
                 }
 
                 setResult(Activity.RESULT_OK, Intent().putExtras(data))
+                progressBarSignUp.visibility = View.GONE
                 finish()
 
             } else {
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                progressBarSignUp.visibility = View.GONE
                 clearFields()
             }
         }
@@ -113,6 +119,7 @@ class SignUpActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         setResult(Activity.RESULT_CANCELED)
+        progressBarSignUp.visibility = View.GONE
         super.onBackPressed()
     }
 }

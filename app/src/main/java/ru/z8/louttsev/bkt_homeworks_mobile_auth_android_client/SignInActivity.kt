@@ -6,8 +6,10 @@ import android.accounts.AccountManager.*
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import io.ktor.util.KtorExperimentalAPI
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_sign_in.*
 
 /**
@@ -44,6 +46,8 @@ class SignInActivity : AppCompatActivity() {
         val password = passwordEdt.text.toString()
 
         if (isCorrectInputted(login, password)) {
+            progressBarSignIn.visibility = View.VISIBLE
+
             requestToken(login, password)
         }
     }
@@ -87,6 +91,7 @@ class SignInActivity : AppCompatActivity() {
 
             } else {
                 makeToast(this, R.string.authentication_error_message)
+                progressBarSignIn.visibility = View.GONE
                 clearFields()
             }
         }
@@ -95,7 +100,7 @@ class SignInActivity : AppCompatActivity() {
     private fun finishSignIn(data: Bundle) {
         setAccountAuthenticatorResult(data)
         setResult(Activity.RESULT_OK, Intent().putExtras(data))
-
+        progressBarSignIn.visibility = View.GONE
         finish()
     }
 
