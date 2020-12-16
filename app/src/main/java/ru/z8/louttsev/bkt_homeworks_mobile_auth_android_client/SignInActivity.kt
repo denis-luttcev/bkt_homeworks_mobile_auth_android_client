@@ -9,14 +9,15 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import io.ktor.util.KtorExperimentalAPI
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_sign_in.*
+import ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.databinding.ActivitySignInBinding
 
 /**
  * Implementation borrowed from deprecated AccountAuthenticatorActivity
  */
 @KtorExperimentalAPI
 class SignInActivity : AppCompatActivity() {
+    private lateinit var mBinding: ActivitySignInBinding
+
     private var mAccountAuthenticatorResponse: AccountAuthenticatorResponse? = null
     private var mResultBundle: Bundle? = null
 
@@ -26,27 +27,28 @@ class SignInActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sign_in)
+        mBinding = ActivitySignInBinding.inflate(layoutInflater)
+        setContentView(mBinding.root)
 
         mAccountAuthenticatorResponse =
             intent.getParcelableExtra(KEY_ACCOUNT_AUTHENTICATOR_RESPONSE)
         mAccountAuthenticatorResponse?.onRequestContinued()
 
-        signInBtn.setOnClickListener {
+        mBinding.signInBtn.setOnClickListener {
             login()
         }
 
-        registrationBtn.setOnClickListener {
+        mBinding.registrationBtn.setOnClickListener {
             signUp()
         }
     }
 
     private fun login() {
-        val login = loginEdt.text.toString()
-        val password = passwordEdt.text.toString()
+        val login = mBinding.loginEdt.text.toString()
+        val password = mBinding.passwordEdt.text.toString()
 
         if (isCorrectInputted(login, password)) {
-            progressBarSignIn.visibility = View.VISIBLE
+            mBinding.progressBarSignIn.visibility = View.VISIBLE
 
             requestToken(login, password)
         }
@@ -65,8 +67,8 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun clearFields() {
-        loginEdt.text.clear()
-        passwordEdt.text.clear()
+        mBinding.loginEdt.text.clear()
+        mBinding.passwordEdt.text.clear()
     }
 
     private fun requestToken(login: String, password: String) {
@@ -91,7 +93,7 @@ class SignInActivity : AppCompatActivity() {
 
             } else {
                 makeToast(this, R.string.authentication_error_message)
-                progressBarSignIn.visibility = View.GONE
+                mBinding.progressBarSignIn.visibility = View.GONE
                 clearFields()
             }
         }
@@ -100,7 +102,7 @@ class SignInActivity : AppCompatActivity() {
     private fun finishSignIn(data: Bundle) {
         setAccountAuthenticatorResult(data)
         setResult(Activity.RESULT_OK, Intent().putExtras(data))
-        progressBarSignIn.visibility = View.GONE
+        mBinding.progressBarSignIn.visibility = View.GONE
         finish()
     }
 

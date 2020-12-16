@@ -14,8 +14,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import io.ktor.features.UnsupportedMediaTypeException
 import io.ktor.util.KtorExperimentalAPI
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.new_post_layout.*
+import ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.databinding.ActivityMainBinding
 import ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.datamodel.AdsPost
 import ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.datamodel.Post
 import ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.datamodel.Repost
@@ -28,11 +27,16 @@ private const val CAMERA_REQUEST = 101
 
 @KtorExperimentalAPI
 class MainActivity : AppCompatActivity() {
-    private val mFiller = LayoutFiller(this)
+    private lateinit var mBinding: ActivityMainBinding
+
+    private lateinit var mFiller: LayoutFiller
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        mBinding = ActivityMainBinding.inflate(layoutInflater)
+        mBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(mBinding.root)
+        mFiller = LayoutFiller(this, mBinding)
 
         checkAuthentication(onSuccess = ::init, onFailure = ::finish)
     }
@@ -64,7 +68,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        progressBar.visibility = View.VISIBLE
+        mBinding.progressBar.visibility = View.VISIBLE
 
         val accounts = accountManager.getAccountsByType(ACCOUNT_TYPE)
         if (accounts.isEmpty()) {
@@ -109,7 +113,7 @@ class MainActivity : AppCompatActivity() {
             if (null != user) {
                 sMyself = user
 
-                progressBar.visibility = View.GONE
+                mBinding.progressBar.visibility = View.GONE
 
                 mFiller.initViews()
 
@@ -125,7 +129,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadInitData() {
-        swipeContainer.isRefreshing = true
+        mBinding.swipeContainer.isRefreshing = true
 
         sNetworkService.fetchData(::handlePostsAndAds)
     }
@@ -137,7 +141,7 @@ class MainActivity : AppCompatActivity() {
 
             mFiller.notifyDataSetChanged()
 
-            swipeContainer.isRefreshing = false
+            mBinding.swipeContainer.isRefreshing = false
 
         } else {
             handleAuthorizationException()
@@ -147,7 +151,7 @@ class MainActivity : AppCompatActivity() {
     private fun isPresent(posts: List<Post>?, ads: List<AdsPost>?) = posts != null && ads != null
 
     private fun handleAuthorizationException() {
-        swipeContainer.isRefreshing = false
+        mBinding.swipeContainer.isRefreshing = false
 
         resetToken()
     }
@@ -180,11 +184,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleGalleryImage(imageUri: Uri) {
-        newPreviewIv.setImageURI(imageUri)
-        newPreviewIv.clearColorFilter()
+        mBinding.newPostLayout.newPreviewIv.setImageURI(imageUri)
+        mBinding.newPostLayout.newPreviewIv.clearColorFilter()
 
-        newGalleryBtn.visibility = View.GONE
-        newCameraBtn.visibility = View.GONE
+        mBinding.newPostLayout.newGalleryBtn.visibility = View.GONE
+        mBinding.newPostLayout.newCameraBtn.visibility = View.GONE
 
         sendMedia(imageUri)
     }
@@ -208,7 +212,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun refreshData() {
-        swipeContainer.isRefreshing = true
+        mBinding.swipeContainer.isRefreshing = true
 
         sNetworkService.appendPosts(sRepository.getPostsCount(), ::handlePosts)
         sNetworkService.appendAds(sRepository.getAdsCount(), ::handleAds)
@@ -220,7 +224,7 @@ class MainActivity : AppCompatActivity() {
 
             mFiller.notifyDataSetChanged()
 
-            swipeContainer.isRefreshing = false
+            mBinding.swipeContainer.isRefreshing = false
 
         } else {
             handleAuthorizationException()
@@ -264,7 +268,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun handleMedia(url: String?, cause: Throwable?) {
         if (url != null) {
-            newPreviewIv.tag = url
+            mBinding.newPostLayout.newPreviewIv.tag = url
 
         } else {
             when (cause) {
@@ -296,7 +300,7 @@ class MainActivity : AppCompatActivity() {
     private fun handleUpdatedPost(position: Int) {
         mFiller.notifyDataSetChanged()
 
-        postListing.smoothScrollToPosition(position)
+        mBinding.postListing.smoothScrollToPosition(position)
         mFiller.prepareNewTextPostBody()
     }
 
@@ -384,7 +388,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
 
-        progressBar.visibility = View.GONE
+        mBinding.progressBar.visibility = View.GONE
         cancelRequests()
     }
 

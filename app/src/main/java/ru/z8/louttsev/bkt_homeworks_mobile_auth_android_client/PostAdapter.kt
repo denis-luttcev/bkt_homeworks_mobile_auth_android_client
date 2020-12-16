@@ -5,14 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import io.ktor.util.KtorExperimentalAPI
+import ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.databinding.PostCardLayoutBinding
 
 @KtorExperimentalAPI
 class PostAdapter(private val mFiller: LayoutFiller) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.post_card_layout, parent, false)
+        val binding = PostCardLayoutBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        return PostViewHolder(view)
+        return PostViewHolder(binding.root, binding)
     }
 
     override fun getItemCount(): Int {
@@ -23,9 +23,9 @@ class PostAdapter(private val mFiller: LayoutFiller) : RecyclerView.Adapter<Recy
         val post = sRepository.getItemByPosition(itemPosition)
         val postPosition = sRepository.getPostPosition(itemPosition)
 
-        mFiller.initPostCardLayout(holder.itemView, post, postPosition)
-        mFiller.initPostView(holder.itemView, post)
+        mFiller.initPostCardLayout((holder as PostViewHolder).mBinding, post, postPosition)
+        mFiller.initPostView(holder.mBinding, post)
     }
 }
 
-class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+class PostViewHolder(itemView: View, val mBinding: PostCardLayoutBinding) : RecyclerView.ViewHolder(itemView)

@@ -9,28 +9,30 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import io.ktor.util.KtorExperimentalAPI
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_sign_up.*
+import ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.databinding.ActivitySignUpBinding
 
 @KtorExperimentalAPI
 class SignUpActivity : AppCompatActivity() {
+    private lateinit var mBinding: ActivitySignUpBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sign_up)
+        mBinding = ActivitySignUpBinding.inflate(layoutInflater)
+        setContentView(mBinding.root)
 
-        signUpBtn.setOnClickListener {
+        mBinding.signUpBtn.setOnClickListener {
             registration()
         }
     }
 
     private fun registration() {
-        val username = usernameEdt.text.toString()
-        val login = loginEdt.text.toString()
-        val password = passwordEdt.text.toString()
-        val passwordConfirmation = passwordConfirmationEdt.text.toString()
+        val username = mBinding.usernameEdt.text.toString()
+        val login = mBinding.loginEdt.text.toString()
+        val password = mBinding.passwordEdt.text.toString()
+        val passwordConfirmation = mBinding.passwordConfirmationEdt.text.toString()
 
         if (isCorrectInputted(login, password, username, passwordConfirmation)) {
-            progressBarSignUp.visibility = View.VISIBLE
+            mBinding.progressBarSignUp.visibility = View.VISIBLE
 
             requestRegistration(username, login, password)
         }
@@ -59,10 +61,10 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun clearFields() {
-        usernameEdt.text.clear()
-        loginEdt.text.clear()
-        passwordEdt.text.clear()
-        passwordConfirmationEdt.text.clear()
+        mBinding.usernameEdt.text.clear()
+        mBinding.loginEdt.text.clear()
+        mBinding.passwordEdt.text.clear()
+        mBinding.passwordConfirmationEdt.text.clear()
     }
 
     private fun validateUsername(username: String): Boolean {
@@ -106,12 +108,12 @@ class SignUpActivity : AppCompatActivity() {
                 }
 
                 setResult(Activity.RESULT_OK, Intent().putExtras(data))
-                progressBarSignUp.visibility = View.GONE
+                mBinding.progressBarSignUp.visibility = View.GONE
                 finish()
 
             } else {
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-                progressBarSignUp.visibility = View.GONE
+                mBinding.progressBarSignUp.visibility = View.GONE
                 clearFields()
             }
         }
@@ -119,7 +121,7 @@ class SignUpActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         setResult(Activity.RESULT_CANCELED)
-        progressBarSignUp.visibility = View.GONE
+        mBinding.progressBarSignUp.visibility = View.GONE
         super.onBackPressed()
     }
 }

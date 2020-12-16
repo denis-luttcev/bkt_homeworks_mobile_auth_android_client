@@ -11,45 +11,47 @@ import androidx.constraintlayout.widget.Group
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.ktor.util.KtorExperimentalAPI
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.new_post_layout.*
-import kotlinx.android.synthetic.main.post_card_layout.*
-import kotlinx.android.synthetic.main.post_card_layout.view.*
+import ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.databinding.ActivityMainBinding
+import ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.databinding.NewPostLayoutBinding
+import ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.databinding.PostCardLayoutBinding
 import ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.datamodel.*
 import ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.services.SchemaAPI.*
 
 @KtorExperimentalAPI
-class LayoutFiller(private val mActivity: MainActivity) {
+class LayoutFiller(
+    private val mActivity: MainActivity,
+    private val mBinding: ActivityMainBinding
+) {
     private val mAdapter = PostAdapter(this)
 
     fun notifyDataSetChanged() {
         mAdapter.notifyDataSetChanged()
-        with(mActivity) { postListing.smoothScrollToPosition(0) }
+        with(mBinding) { postListing.smoothScrollToPosition(0) }
     }
 
     fun initViews() {
-        with(mActivity) {
+        with(mBinding) {
             showUserInfo()
 
-            postListing.layoutManager = LinearLayoutManager(this)
+            postListing.layoutManager = LinearLayoutManager(mActivity)
             postListing.adapter = mAdapter
 
             swipeContainer.setOnRefreshListener {
-                refreshData()
+                mActivity.refreshData()
             }
 
             prepareNewTextPostBody()
-            newPostLayout.visibility = VISIBLE
+            newPostLayout.root.visibility = VISIBLE
         }
     }
 
-    private fun MainActivity.showUserInfo() {
-        val welcomeMessage = getString(R.string.welcome) + sMyself!!.username
-        currentUser.text = welcomeMessage
+    private fun showUserInfo() {
+        val welcomeMessage = mActivity.getString(R.string.welcome) + sMyself!!.username
+        mBinding.currentUser.text = welcomeMessage
     }
 
     fun prepareNewTextPostBody() {
-        with(mActivity) {
+        with(mBinding.newPostLayout) {
             clearNewPostBody()
             textBtn.isChecked = true
 
@@ -75,7 +77,7 @@ class LayoutFiller(private val mActivity: MainActivity) {
                 if (checkContent(content)) {
                     val post = TextPost(author = sMyself!!.username, content = content)
 
-                    sendPost(post)
+                    mActivity.sendPost(post)
                     prepareNewTextPostBody()
                 }
             }
@@ -86,7 +88,7 @@ class LayoutFiller(private val mActivity: MainActivity) {
         }
     }
 
-    private fun MainActivity.clearNewPostBody() {
+    private fun NewPostLayoutBinding.clearNewPostBody() {
         newContentTv.text.clear()
         newLocationGrp.visibility = GONE
         newPreviewIv.setImageURI(null)
@@ -114,18 +116,18 @@ class LayoutFiller(private val mActivity: MainActivity) {
     }
 
     fun prepareNewImagePostBody() {
-        with(mActivity) {
+        with(mBinding.newPostLayout) {
             clearNewPostBody()
             newPreviewIv.visibility = VISIBLE
 
             newGalleryBtn.visibility = VISIBLE
             newGalleryBtn.setOnClickListener {
-                getGalleryContent()
+                mActivity.getGalleryContent()
             }
 
             newCameraBtn.visibility = VISIBLE
             newCameraBtn.setOnClickListener {
-                getCameraContent()
+                mActivity.getCameraContent()
             }
 
             sendBtn.setOnClickListener {
@@ -139,7 +141,7 @@ class LayoutFiller(private val mActivity: MainActivity) {
                             content = content,
                             imageUrl = imageUrl
                         )
-                    sendPost(post)
+                    mActivity.sendPost(post)
                     prepareNewTextPostBody()
                 }
             }
@@ -156,19 +158,21 @@ class LayoutFiller(private val mActivity: MainActivity) {
         return condition
     }
 
-    private fun MainActivity.prepareNewEventPostBody() {
-        clearNewPostBody()
-        newLocationGrp.visibility = VISIBLE
+    private fun prepareNewEventPostBody() {
+        with(mBinding.newPostLayout) {
+            clearNewPostBody()
+            newLocationGrp.visibility = VISIBLE
 
-        sendBtn.setOnClickListener {
-            val content = newContentTv.text.toString()
-            val address = newAddressEt.text.toString()
+            sendBtn.setOnClickListener {
+                val content = newContentTv.text.toString()
+                val address = newAddressEt.text.toString()
 
-            if (checkContent(content) && checkAddress(address)) {
-                val post =
-                    EventPost(author = sMyself!!.username, content = content, address = address)
-                sendPost(post)
-                prepareNewTextPostBody()
+                if (checkContent(content) && checkAddress(address)) {
+                    val post =
+                        EventPost(author = sMyself!!.username, content = content, address = address)
+                    mActivity.sendPost(post)
+                    prepareNewTextPostBody()
+                }
             }
         }
     }
@@ -183,28 +187,34 @@ class LayoutFiller(private val mActivity: MainActivity) {
         return condition
     }
 
-    private fun MainActivity.prepareNewVideoPostBody() {
-        clearNewPostBody()
-        newVideoUrlEt.visibility = VISIBLE
+    private fun prepareNewVideoPostBody() {
+        with(mBinding.newPostLayout) {
+            clearNewPostBody()
+            newVideoUrlEt.visibility = VISIBLE
 
-        newVideoUrlEt.setOnFocusChangeListener { _, focused ->
-            handleVideoUrl(focused)
-        }
+            newVideoUrlEt.setOnFocusChangeListener { _, focused ->
+                handleVideoUrl(focused)
+            }
 
-        sendBtn.setOnClickListener {
-            val content = newContentTv.text.toString()
-            val inputUrl = newVideoUrlEt.text.toString()
+            sendBtn.setOnClickListener {
+                val content = newContentTv.text.toString()
+                val inputUrl = newVideoUrlEt.text.toString()
 
-            if (checkContent(content) && isYoutubeUrl(inputUrl)) {
-                val post =
-                    VideoPost(author = sMyself!!.username, content = content, videoUrl = inputUrl)
-                sendPost(post)
-                prepareNewTextPostBody()
+                if (checkContent(content) && isYoutubeUrl(inputUrl)) {
+                    val post =
+                        VideoPost(
+                            author = sMyself!!.username,
+                            content = content,
+                            videoUrl = inputUrl
+                        )
+                    mActivity.sendPost(post)
+                    prepareNewTextPostBody()
+                }
             }
         }
     }
 
-    private fun MainActivity.handleVideoUrl(focused: Boolean) {
+    private fun NewPostLayoutBinding.handleVideoUrl(focused: Boolean) {
         if (!focused) {
             if (videoBtn.isChecked) {
 
@@ -221,13 +231,13 @@ class LayoutFiller(private val mActivity: MainActivity) {
         }
     }
 
-    private fun MainActivity.updateVideoPreview(): Boolean {
+    private fun NewPostLayoutBinding.updateVideoPreview(): Boolean {
         val inputUrl = newVideoUrlEt.text.toString()
 
         return if (isYoutubeUrl(inputUrl)) {
             val url = VideoPost.parseVideoUrl(inputUrl)
 
-            requestMedia(url, newPreviewIv)
+            mActivity.requestMedia(url, newPreviewIv)
             true
 
         } else {
@@ -246,8 +256,8 @@ class LayoutFiller(private val mActivity: MainActivity) {
         return condition
     }
 
-    fun initPostCardLayout(itemView: View, post: Post, positionTag: Int) {
-        fun View.initLikes(post: Post, positionTag: Int) {
+    fun initPostCardLayout(binding: PostCardLayoutBinding, post: Post, positionTag: Int) {
+        fun PostCardLayoutBinding.initLikes(post: Post, positionTag: Int) {
             likeCb.isChecked = post.liked
             updateSocialCountView(post.likes, post.liked, likesCountTv)
 
@@ -263,7 +273,7 @@ class LayoutFiller(private val mActivity: MainActivity) {
             }
         }
 
-        fun View.initComments(post: Post, positionTag: Int) {
+        fun PostCardLayoutBinding.initComments(post: Post, positionTag: Int) {
             commentCb.isChecked = post.commented
             updateSocialCountView(post.comments, post.commented, commentsCountTv)
 
@@ -282,7 +292,7 @@ class LayoutFiller(private val mActivity: MainActivity) {
             }
         }
 
-        fun View.initShares(post: Post, positionTag: Int) {
+        fun PostCardLayoutBinding.initShares(post: Post, positionTag: Int) {
             shareCb.isChecked = post.shared
             updateSocialCountView(post.shares, post.shared, sharesCountTv)
 
@@ -300,7 +310,7 @@ class LayoutFiller(private val mActivity: MainActivity) {
             }
         }
 
-        fun View.setButtonsVisibility(post: Post) {
+        fun PostCardLayoutBinding.setButtonsVisibility(post: Post) {
             if (post.isMy) {
                 hideBtn.visibility = GONE
                 deleteBtn.visibility = VISIBLE
@@ -312,7 +322,7 @@ class LayoutFiller(private val mActivity: MainActivity) {
             }
         }
 
-        fun View.initHide(positionTag: Int) {
+        fun PostCardLayoutBinding.initHide(positionTag: Int) {
             hideBtn.tag = positionTag
             hideBtn.setOnClickListener { view: View ->
                 val thisPost: Post = sRepository.getPostByPosition(view.tag as Int)
@@ -321,7 +331,7 @@ class LayoutFiller(private val mActivity: MainActivity) {
             }
         }
 
-        fun View.initDeleteButton(positionTag: Int) {
+        fun PostCardLayoutBinding.initDeleteButton(positionTag: Int) {
             deleteBtn.tag = positionTag
             deleteBtn.setOnClickListener { view: View ->
                 val thisPost: Post = sRepository.getPostByPosition(view.tag as Int)
@@ -330,17 +340,17 @@ class LayoutFiller(private val mActivity: MainActivity) {
             }
         }
 
-        fun View.initEditButton(positionTag: Int) {
+        fun PostCardLayoutBinding.initEditButton(positionTag: Int) {
             editBtn.tag = positionTag
             editBtn.setOnClickListener { view: View ->
                 val position = view.tag as Int
                 val thisPost = sRepository.getPostByPosition(position)
 
-                mActivity.prepareEditPostBody(thisPost, position)
+                prepareEditPostBody(thisPost, position)
             }
         }
 
-        with(itemView) {
+        with(binding) {
             initLikes(post, positionTag)
             initComments(post, positionTag)
             initShares(post, positionTag)
@@ -352,124 +362,129 @@ class LayoutFiller(private val mActivity: MainActivity) {
         }
     }
 
-    private fun MainActivity.prepareEditPostBody(post: Post, position: Int) {
-        clearNewPostBody()
-        typeGrp.visibility = GONE
+    private fun PostCardLayoutBinding.prepareEditPostBody(post: Post, position: Int) {
+        with(mBinding.newPostLayout) {
+            clearNewPostBody()
+            typeGrp.visibility = GONE
 
-        newContentTv.setText(post.content)
+            newContentTv.setText(post.content)
 
-        when (post) {
+            when (post) {
 
-            is TextPost -> {
-                sendBtn.setOnClickListener {
-                    val content = newContentTv.text.toString()
+                is TextPost -> {
+                    sendBtn.setOnClickListener {
+                        val content = newContentTv.text.toString()
 
-                    if (checkContent(content)) {
-                        post.content = content
-                        updatePostData(post, position)
+                        if (checkContent(content)) {
+                            post.content = content
+                            mActivity.updatePostData(post, position)
+                        }
                     }
                 }
-            }
 
-            is ImagePost -> {
-                newPreviewIv.visibility = VISIBLE
-                newPlayBtn.visibility = GONE
+                is ImagePost -> {
+                    newPreviewIv.visibility = VISIBLE
+                    newPlayBtn.visibility = GONE
 
-                newPreviewIv.updateImageView(post)
-                newPreviewIv.tag = post.imageUrl
-                newPreviewIv.setColorFilter(Color.argb(150, 255, 255, 255))
+                    newPreviewIv.updateImageView(post)
+                    newPreviewIv.tag = post.imageUrl
+                    newPreviewIv.setColorFilter(Color.argb(150, 255, 255, 255))
 
-                newGalleryBtn.visibility = VISIBLE
-                newGalleryBtn.setOnClickListener {
-                    getGalleryContent()
-                }
+                    newGalleryBtn.visibility = VISIBLE
+                    newGalleryBtn.setOnClickListener {
+                        mActivity.getGalleryContent()
+                    }
 
-                newCameraBtn.visibility = VISIBLE
-                newCameraBtn.setOnClickListener {
-                    getCameraContent()
-                }
+                    newCameraBtn.visibility = VISIBLE
+                    newCameraBtn.setOnClickListener {
+                        mActivity.getCameraContent()
+                    }
 
-                sendBtn.setOnClickListener {
-                    val content = newContentTv.text.toString()
-                    val imageUrl = newPreviewIv.tag.toString()
+                    sendBtn.setOnClickListener {
+                        val content = newContentTv.text.toString()
+                        val imageUrl = newPreviewIv.tag.toString()
 
-                    if (checkContent(content) && checkImageUrl(imageUrl)) {
-                        post.content = content
-                        post.imageUrl = imageUrl
-                        updatePostData(post, position)
+                        if (checkContent(content) && checkImageUrl(imageUrl)) {
+                            post.content = content
+                            post.imageUrl = imageUrl
+                            mActivity.updatePostData(post, position)
+                        }
                     }
                 }
-            }
 
-            is EventPost -> {
-                newLocationGrp.visibility = VISIBLE
-                newAddressEt.setText(post.address)
+                is EventPost -> {
+                    newLocationGrp.visibility = VISIBLE
+                    newAddressEt.setText(post.address)
 
-                sendBtn.setOnClickListener {
-                    val content = newContentTv.text.toString()
-                    val address = newAddressEt.text.toString()
+                    sendBtn.setOnClickListener {
+                        val content = newContentTv.text.toString()
+                        val address = newAddressEt.text.toString()
 
-                    if (checkContent(content) && checkAddress(address)) {
-                        post.content = content
-                        post.address = address
-                        updatePostData(post, position)
+                        if (checkContent(content) && checkAddress(address)) {
+                            post.content = content
+                            post.address = address
+                            mActivity.updatePostData(post, position)
+                        }
                     }
                 }
-            }
 
-            is VideoPost -> {
-                newPreviewIv.visibility = VISIBLE
-                newPlayBtn.visibility = VISIBLE
-                newVideoUrlEt.visibility = VISIBLE
+                is VideoPost -> {
+                    newPreviewIv.visibility = VISIBLE
+                    newPlayBtn.visibility = VISIBLE
+                    newVideoUrlEt.visibility = VISIBLE
 
-                newPreviewIv.updateImageView(post)
-                newVideoUrlEt.setText(post.videoUrl)
+                    newPreviewIv.updateImageView(post)
+                    newVideoUrlEt.setText(post.videoUrl)
 
-                newVideoUrlEt.setOnFocusChangeListener { _, _ ->
-                    Unit
-                    if (!updateVideoPreview()) return@setOnFocusChangeListener
-                }
+                    newVideoUrlEt.setOnFocusChangeListener { _, _ ->
+                        if (!updateVideoPreview()) return@setOnFocusChangeListener
+                    }
 
-                sendBtn.setOnClickListener {
-                    val content = newContentTv.text.toString()
-                    val inputUrl = newVideoUrlEt.text.toString()
+                    sendBtn.setOnClickListener {
+                        val content = newContentTv.text.toString()
+                        val inputUrl = newVideoUrlEt.text.toString()
 
-                    if (checkContent(content) && isYoutubeUrl(inputUrl)) {
-                        post.content = content
-                        post.videoUrl = inputUrl
-                        updatePostData(post, position)
+                        if (checkContent(content) && isYoutubeUrl(inputUrl)) {
+                            post.content = content
+                            post.videoUrl = inputUrl
+                            mActivity.updatePostData(post, position)
+                        }
                     }
                 }
-            }
 
-            is Repost -> {
-                newContainerFl.visibility = VISIBLE
+                is Repost -> {
+                    newContainerFl.visibility = VISIBLE
 
-                val repostView = LayoutInflater.from(this)
-                    .inflate(R.layout.repost_layout, containerFl, false)
+                    val binding = PostCardLayoutBinding.inflate(
+                        LayoutInflater.from(mActivity),
+                        containerFl,
+                        false
+                    )
 
-                initPostView(repostView, sRepository.findRepostSource(post))
+                    initPostView(binding, sRepository.findRepostSource(post))
 
-                repostView.findViewById<Group>(R.id.socialGrp).visibility = GONE
-                repostView.adsTv.visibility = GONE
+                    binding.socialGrp.visibility = GONE
+                    binding.adsTv.visibility = GONE
 
-                newContainerFl.addView(repostView)
+                    newContainerFl.addView(binding.root)
 
-                sendBtn.setOnClickListener {
-                    val content = newContentTv.text.toString()
+                    sendBtn.setOnClickListener {
+                        val content = newContentTv.text.toString()
 
-                    if (checkContent(content)) {
-                        post.content = content
-                        updatePostData(post, position)
+                        if (checkContent(content)) {
+                            post.content = content
+                            mActivity.updatePostData(post, position)
+                        }
                     }
                 }
+
+                is AdsPost -> {
+                } // ignored
             }
 
-            is AdsPost -> {} // ignored
-        }
-
-        cancelBtn.setOnClickListener {
-            prepareNewTextPostBody()
+            cancelBtn.setOnClickListener {
+                prepareNewTextPostBody()
+            }
         }
     }
 
@@ -483,14 +498,14 @@ class LayoutFiller(private val mActivity: MainActivity) {
         mActivity.requestMedia(mediaUrl, this)
     }
 
-    fun initPostView(itemView: View, post: Post) {
+    fun initPostView(binding: PostCardLayoutBinding, post: Post) {
 
-        fun View.dyeBackground(colorResource: Int) {
-            setBackgroundColor(ContextCompat.getColor(mActivity, colorResource))
+        fun PostCardLayoutBinding.dyeBackground(colorResource: Int) {
+            this.root.setBackgroundColor(ContextCompat.getColor(mActivity, colorResource))
         }
 
-        fun View.clearFields() {
-            findViewById<Group>(R.id.socialGrp).visibility = VISIBLE
+        fun PostCardLayoutBinding.clearFields() {
+            socialGrp.visibility = VISIBLE
             adsTv.visibility = GONE
             locationGrp.visibility = GONE
             previewIv.visibility = GONE
@@ -499,14 +514,14 @@ class LayoutFiller(private val mActivity: MainActivity) {
             containerFl.removeAllViews()
         }
 
-        fun View.initCommonFields() {
+        fun PostCardLayoutBinding.initCommonFields() {
             authorTv.text = post.author
             createdTv.text = post.age
             contentTv.text = post.content
             viewsCountTv.text = if (post.views > 0) post.views.toString() else ""
         }
 
-        with(itemView) {
+        with(binding) {
             dyeBackground(R.color.colorSecondaryBackground)
             clearFields()
 
@@ -549,22 +564,25 @@ class LayoutFiller(private val mActivity: MainActivity) {
                 is Repost -> {
                     containerFl.visibility = VISIBLE
 
-                    val repostView = LayoutInflater.from(mActivity)
-                        .inflate(R.layout.repost_layout, containerFl, false)
+                    val repostBinding = PostCardLayoutBinding.inflate(
+                        LayoutInflater.from(mActivity),
+                        containerFl,
+                        false
+                    )
 
-                    initPostView(repostView, sRepository.findRepostSource(post))
+                    initPostView(repostBinding, sRepository.findRepostSource(post))
 
-                    repostView.findViewById<Group>(R.id.socialGrp).visibility = GONE
-                    repostView.adsTv.visibility = GONE
+                    repostBinding.socialGrp.visibility = GONE
+                    repostBinding.adsTv.visibility = GONE
 
-                    containerFl.addView(repostView)
+                    containerFl.addView(repostBinding.root)
                 }
 
                 is AdsPost -> {
                     dyeBackground(R.color.colorAdsBackground)
 
                     adsTv.visibility = VISIBLE
-                    findViewById<Group>(R.id.socialGrp).visibility = GONE
+                    socialGrp.visibility = GONE
 
                     contentTv.setOnClickListener {
                         post.open(mActivity)
@@ -575,7 +593,7 @@ class LayoutFiller(private val mActivity: MainActivity) {
     }
 
     fun prepareNewRepostBody(post: Post, checkBox: CheckBox?, countView: TextView?) {
-        with(mActivity) {
+        with(mBinding.newPostLayout) {
             typeGrp.visibility = GONE
 
             when (post) {
@@ -595,10 +613,10 @@ class LayoutFiller(private val mActivity: MainActivity) {
 
                     newAddressEt.setText(post.address)
                     newAddressEt.setOnClickListener {
-                        post.open(this)
+                        post.open(mActivity)
                     }
                     newLocationIv.setOnClickListener {
-                        post.open(this)
+                        post.open(mActivity)
                     }
                 }
 
@@ -609,22 +627,25 @@ class LayoutFiller(private val mActivity: MainActivity) {
                     newPreviewIv.updateImageView(post)
 
                     newPlayBtn.setOnClickListener {
-                        post.open(this)
+                        post.open(mActivity)
                     }
                 }
 
                 is Repost -> {
                     newContainerFl.visibility = VISIBLE
 
-                    val repostView = LayoutInflater.from(mActivity)
-                        .inflate(R.layout.repost_layout, containerFl, false)
+                    val binding = PostCardLayoutBinding.inflate(
+                        LayoutInflater.from(mActivity),
+                        newContainerFl,
+                        false
+                    )
 
-                    initPostView(repostView, sRepository.findRepostSource(post))
+                    initPostView(binding, sRepository.findRepostSource(post))
 
-                    repostView.findViewById<Group>(R.id.socialGrp).visibility = GONE
-                    repostView.adsTv.visibility = GONE
+                    binding.socialGrp.visibility = GONE
+                    binding.adsTv.visibility = GONE
 
-                    newContainerFl.addView(repostView)
+                    newContainerFl.addView(binding.root)
                 }
 
                 is AdsPost -> {
@@ -636,7 +657,7 @@ class LayoutFiller(private val mActivity: MainActivity) {
 
                 if (checkContent(content)) {
                     post.content = content
-                    sendPost(post)
+                    mActivity.sendPost(post)
                     prepareNewTextPostBody()
                 }
             }
@@ -646,7 +667,7 @@ class LayoutFiller(private val mActivity: MainActivity) {
                     val sharedPost = sRepository.getPostById(post.source!!)
                     checkBox!!.isChecked = false
 
-                    sendSocial(sharedPost, SocialAction.SHARE, Mode.DELETE, checkBox, countView)
+                    mActivity.sendSocial(sharedPost, SocialAction.SHARE, Mode.DELETE, checkBox, countView)
                 }
 
                 prepareNewTextPostBody()
