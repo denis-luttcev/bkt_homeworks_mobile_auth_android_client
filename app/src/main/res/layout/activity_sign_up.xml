@@ -6,130 +6,116 @@
     android:background="@color/colorSecondaryBackground"
     android:padding="32dp">
 
-    <TextView
-        android:id="@+id/usernameLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/username_label"
-        android:textColor="@color/colorPrimaryText"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/usernameEdt"
-        app:layout_constraintStart_toStartOf="@+id/usernameEdt"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <EditText
-        android:id="@+id/usernameEdt"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/usernameLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/rounded_field"
-        android:ems="10"
         android:hint="@string/username_hint"
-        android:inputType="textShortMessage"
-        android:padding="8dp"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/loginLabel"
+        app:hintTextAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintBottom_toTopOf="@+id/loginLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/usernameLabel"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
 
-    <TextView
-        android:id="@+id/loginLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/login_label"
-        android:textColor="@color/colorPrimaryText"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/loginEdt"
-        app:layout_constraintStart_toStartOf="@+id/loginEdt"
-        app:layout_constraintTop_toBottomOf="@+id/usernameEdt"
-        app:layout_constraintVertical_chainStyle="packed" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/usernameEdt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_inputtext_field"
+            android:inputType="textShortMessage"
+            android:paddingStart="8dp"
+            android:paddingTop="32dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
+            android:textSize="24sp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:id="@+id/loginEdt"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/loginLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:background="@drawable/rounded_field"
-        android:ems="10"
         android:hint="@string/login_hint"
-        android:inputType="textShortMessage"
-        android:padding="8dp"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/passwordLabel"
-        app:layout_constraintEnd_toEndOf="@+id/usernameEdt"
+        app:hintTextAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintBottom_toTopOf="@+id/passwordLayout"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/usernameEdt"
-        app:layout_constraintTop_toBottomOf="@+id/loginLabel"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/usernameLayout"
+        app:layout_constraintVertical_chainStyle="packed">
 
-    <TextView
-        android:id="@+id/passwordLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:padding="4dp"
-        android:text="@string/password_label"
-        android:textColor="@color/colorPrimaryText"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/passwordEdt"
-        app:layout_constraintStart_toStartOf="@+id/passwordEdt"
-        app:layout_constraintTop_toBottomOf="@+id/loginEdt"
-        app:layout_constraintVertical_chainStyle="packed" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/loginEdt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_inputtext_field"
+            android:inputType="textShortMessage"
+            android:paddingStart="8dp"
+            android:paddingTop="32dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
+            android:textSize="24sp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:id="@+id/passwordEdt"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/passwordLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:background="@drawable/rounded_field"
-        android:ems="10"
         android:hint="@string/password_hint"
-        android:inputType="textPassword"
-        android:padding="8dp"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/passwordConfirmationLabel"
-        app:layout_constraintEnd_toEndOf="@+id/loginEdt"
+        app:hintTextAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintBottom_toTopOf="@+id/passwordConfirmationLayout"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/loginEdt"
-        app:layout_constraintTop_toBottomOf="@+id/passwordLabel"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginLayout"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleDrawable="@drawable/ic_password_toggle_selector">
 
-    <TextView
-        android:id="@+id/passwordConfirmationLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:padding="4dp"
-        android:text="@string/password_confirmation_label"
-        android:textColor="@color/colorPrimaryText"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/passwordConfirmationEdt"
-        app:layout_constraintStart_toStartOf="@+id/passwordConfirmationEdt"
-        app:layout_constraintTop_toBottomOf="@+id/passwordEdt"
-        app:layout_constraintVertical_chainStyle="packed" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passwordEdt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_inputtext_field"
+            android:inputType="textPassword"
+            android:paddingStart="8dp"
+            android:paddingTop="32dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
+            android:textSize="24sp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <EditText
-        android:id="@+id/passwordConfirmationEdt"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/passwordConfirmationLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:background="@drawable/rounded_field"
-        android:ems="10"
         android:hint="@string/password_confirmation_hint"
-        android:inputType="textPassword"
-        android:padding="8dp"
-        android:textSize="24sp"
+        app:hintTextAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintBottom_toTopOf="@+id/signUpBtn"
-        app:layout_constraintEnd_toEndOf="@+id/passwordEdt"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/passwordEdt"
-        app:layout_constraintTop_toBottomOf="@+id/passwordConfirmationLabel"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordLayout"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleDrawable="@drawable/ic_password_toggle_selector">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passwordConfirmationEdt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_inputtext_field"
+            android:inputType="textPassword"
+            android:paddingStart="8dp"
+            android:paddingTop="32dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
+            android:textSize="24sp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/signUpBtn"
@@ -141,10 +127,10 @@
         android:text="@string/sign_up_btn_text"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/passwordConfirmationEdt"
+        app:layout_constraintEnd_toEndOf="@+id/passwordConfirmationLayout"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/passwordConfirmationEdt"
-        app:layout_constraintTop_toBottomOf="@+id/passwordConfirmationEdt"
+        app:layout_constraintStart_toStartOf="@+id/passwordConfirmationLayout"
+        app:layout_constraintTop_toBottomOf="@+id/passwordConfirmationLayout"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <ProgressBar

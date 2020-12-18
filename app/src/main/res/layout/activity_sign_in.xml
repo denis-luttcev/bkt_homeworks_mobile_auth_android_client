@@ -61,38 +61,6 @@
             android:textSize="24sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
-<!--    <TextView
-        android:id="@+id/passwordLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:padding="4dp"
-        android:text="@string/password_label"
-        android:textColor="@color/colorPrimaryText"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/passwordEdt"
-        app:layout_constraintStart_toStartOf="@+id/passwordEdt"
-        app:layout_constraintTop_toBottomOf="@+id/loginLayout"
-        app:layout_constraintVertical_chainStyle="packed" />-->
-
-<!--    <EditText
-        android:id="@+id/passwordEdt"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/rounded_field"
-        android:ems="10"
-        android:hint="@string/password_hint"
-        android:inputType="textPassword"
-        android:padding="8dp"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/signInBtn"
-        app:layout_constraintEnd_toEndOf="@+id/loginLayout"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/loginLayout"
-        app:layout_constraintTop_toBottomOf="@+id/passwordLabel"
-        app:layout_constraintVertical_chainStyle="packed" />-->
-
     <Button
         android:id="@+id/signInBtn"
         android:layout_width="0dp"

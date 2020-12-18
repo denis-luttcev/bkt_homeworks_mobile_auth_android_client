@@ -61,10 +61,10 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun clearFields() {
-        mBinding.usernameEdt.text.clear()
-        mBinding.loginEdt.text.clear()
-        mBinding.passwordEdt.text.clear()
-        mBinding.passwordConfirmationEdt.text.clear()
+        mBinding.usernameEdt.text?.clear()
+        mBinding.loginEdt.text?.clear()
+        mBinding.passwordEdt.text?.clear()
+        mBinding.passwordConfirmationEdt.text?.clear()
     }
 
     private fun validateUsername(username: String): Boolean {
