@@ -67,7 +67,7 @@ class SignInActivity : AppCompatActivity() {
     }
 
     private fun clearFields() {
-        mBinding.loginEdt.text.clear()
+        mBinding.loginEdt.text?.clear()
         mBinding.passwordEdt.text.clear()
     }
 

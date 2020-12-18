@@ -6,35 +6,31 @@
     android:background="@color/colorSecondaryBackground"
     android:padding="32dp">
 
-    <TextView
-        android:id="@+id/loginLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/login_label"
-        android:textColor="@color/colorPrimaryText"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/loginEdt"
-        app:layout_constraintStart_toStartOf="@+id/loginEdt"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <EditText
-        android:id="@+id/loginEdt"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/loginLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/rounded_field"
-        android:ems="10"
         android:hint="@string/login_hint"
-        android:inputType="textShortMessage"
-        android:padding="8dp"
-        android:textSize="24sp"
+        app:hintTextAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintBottom_toTopOf="@+id/passwordLabel"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loginLabel"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/loginEdt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_inputtext_field"
+            android:inputType="textShortMessage"
+            android:paddingStart="8dp"
+            android:paddingTop="32dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
+            android:textSize="24sp" />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
         android:id="@+id/passwordLabel"
@@ -47,7 +43,7 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/passwordEdt"
         app:layout_constraintStart_toStartOf="@+id/passwordEdt"
-        app:layout_constraintTop_toBottomOf="@+id/loginEdt"
+        app:layout_constraintTop_toBottomOf="@+id/loginLayout"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <EditText
@@ -62,9 +58,9 @@
         android:padding="8dp"
         android:textSize="24sp"
         app:layout_constraintBottom_toTopOf="@+id/signInBtn"
-        app:layout_constraintEnd_toEndOf="@+id/loginEdt"
+        app:layout_constraintEnd_toEndOf="@+id/loginLayout"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/loginEdt"
+        app:layout_constraintStart_toStartOf="@+id/loginLayout"
         app:layout_constraintTop_toBottomOf="@+id/passwordLabel"
         app:layout_constraintVertical_chainStyle="packed" />
 
