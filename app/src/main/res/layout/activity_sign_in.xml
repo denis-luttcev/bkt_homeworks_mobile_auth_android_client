@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/login_hint"
         app:hintTextAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintBottom_toTopOf="@+id/passwordLabel"
+        app:layout_constraintBottom_toTopOf="@+id/passwordLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +32,36 @@
             android:textSize="24sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/passwordLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="@string/password_hint"
+        app:hintTextAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintBottom_toTopOf="@+id/signInBtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginLayout"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:passwordToggleEnabled="true"
+        app:passwordToggleDrawable="@drawable/ic_password_toggle_selector">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passwordEdt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_inputtext_field"
+            android:inputType="textPassword"
+            android:paddingStart="8dp"
+            android:paddingTop="32dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
+            android:textSize="24sp" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+<!--    <TextView
         android:id="@+id/passwordLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,9 +73,9 @@
         app:layout_constraintBottom_toTopOf="@+id/passwordEdt"
         app:layout_constraintStart_toStartOf="@+id/passwordEdt"
         app:layout_constraintTop_toBottomOf="@+id/loginLayout"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintVertical_chainStyle="packed" />-->
 
-    <EditText
+<!--    <EditText
         android:id="@+id/passwordEdt"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -62,7 +91,7 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/loginLayout"
         app:layout_constraintTop_toBottomOf="@+id/passwordLabel"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintVertical_chainStyle="packed" />-->
 
     <Button
         android:id="@+id/signInBtn"
@@ -74,10 +103,10 @@
         android:text="@string/sign_in_btn_text"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/registrationBtn"
-        app:layout_constraintEnd_toEndOf="@+id/passwordEdt"
+        app:layout_constraintEnd_toEndOf="@+id/passwordLayout"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="@+id/passwordEdt"
-        app:layout_constraintTop_toBottomOf="@+id/passwordEdt"
+        app:layout_constraintStart_toStartOf="@+id/passwordLayout"
+        app:layout_constraintTop_toBottomOf="@+id/passwordLayout"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <Button
