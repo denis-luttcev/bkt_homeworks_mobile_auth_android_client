@@ -16,7 +16,9 @@
     <string name="video_url_error_message">Enter correct YouTube video url</string>
     <string name="username_hint">Enter your username</string>
     <string name="login_hint">Enter your login</string>
+    <string name="login_helper_text">10 characters max</string>
     <string name="password_hint">Enter your password</string>
+    <string name="password_helper_text">From 6 to 15 latin letters or number</string>
     <string name="password_confirmation_hint">Re-enter your password</string>
     <string name="sign_in_btn_text">Sign in</string>
     <string name="registration_btn_text">Registration</string>
