@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.widget.addTextChangedListener
+import androidx.core.widget.doOnTextChanged
 import io.ktor.util.KtorExperimentalAPI
 import ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.databinding.ActivitySignUpBinding
 
@@ -19,6 +21,22 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         mBinding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
+
+        mBinding.loginEdt.doOnTextChanged { login, _, _, _ ->
+            if (login!!.length > 10) {
+                mBinding.loginLayout.error = getString(R.string.login_error_message)
+            } else {
+                mBinding.loginLayout.error = ""
+            }
+        }
+
+        mBinding.passwordEdt.doOnTextChanged { password, _, _, _ ->
+            if (!password!!.matches(Regex("""^[A-Za-z0-9]{6,15}$"""))) {
+                mBinding.passwordLayout.error = getString(R.string.password_error_message)
+            } else {
+                mBinding.passwordLayout.error = ""
+            }
+        }
 
         mBinding.signUpBtn.setOnClickListener {
             registration()

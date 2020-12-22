@@ -25,8 +25,7 @@
     <string name="sign_up_btn_text">Sign up</string>
     <string name="registration_data_error_message">Needed not empty username</string>
     <string name="login_error_message">Too long login</string>
-    <string name="password_length_error_message">Too short or long password</string>\
-    <string name="password_chars_error_message">Invalid characters used in the password</string>
+    <string name="password_error_message">Incorrect password</string>
     <string name="authentication_data_error_message">Needed not empty login and password</string>
     <string name="password_confirmation_error_message">Entered passwords don\'t match</string>
     <string name="authentication_error_message">Invalid login or password</string>
