@@ -6,10 +6,10 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.Editable
 import android.view.View
 import android.widget.Toast
-import androidx.core.widget.addTextChangedListener
-import androidx.core.widget.doOnTextChanged
+import androidx.core.widget.doAfterTextChanged
 import io.ktor.util.KtorExperimentalAPI
 import ru.z8.louttsev.bkt_homeworks_mobile_auth_android_client.databinding.ActivitySignUpBinding
 
@@ -22,19 +22,19 @@ class SignUpActivity : AppCompatActivity() {
         mBinding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        mBinding.loginEdt.doOnTextChanged { login, _, _, _ ->
-            if (login!!.length > 10) {
-                mBinding.loginLayout.error = getString(R.string.login_error_message)
-            } else {
+        mBinding.loginEdt.doAfterTextChanged { editable ->
+            if (isLoginValid(editable.toString())) {
                 mBinding.loginLayout.error = ""
+            } else {
+                mBinding.loginLayout.error = getString(R.string.login_error_message)
             }
         }
 
-        mBinding.passwordEdt.doOnTextChanged { password, _, _, _ ->
-            if (!password!!.matches(Regex("""^[A-Za-z0-9]{6,15}$"""))) {
-                mBinding.passwordLayout.error = getString(R.string.password_error_message)
-            } else {
+        mBinding.passwordEdt.doAfterTextChanged { editable ->
+            if (isPasswordValid(editable.toString())) {
                 mBinding.passwordLayout.error = ""
+            } else {
+                mBinding.passwordLayout.error = getString(R.string.password_error_message)
             }
         }
 
@@ -42,6 +42,11 @@ class SignUpActivity : AppCompatActivity() {
             registration()
         }
     }
+
+    private fun isPasswordValid(password: String) =
+        password.matches(Regex("""^[A-Za-z0-9]{6,15}$"""))
+
+    private fun isLoginValid(login: String) = login.length <= 10
 
     private fun registration() {
         val username = mBinding.usernameEdt.text.toString()
